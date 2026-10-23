@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Ventas | Aldo DC</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style2.css">
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back"><i class="fas fa-arrow-left"></i> Volver al portafolio</a>
+  <span class="nav-title">Dashboard de Ventas — Excel</span>
+</nav>
+
+<div class="hero">
+  <div>
+    <span class="badge">PROYECTO 01</span>
+    <h1>Base de Datos con <span>Tabla Dinámica</span> y Segmentación</h1>
+    <p class="desc">
+      Base de datos de ventas construida en Excel con tabla dinámica interactiva, segmentadores por mes y categoría, y gráfico de barras que se actualiza automáticamente al aplicar filtros.
+    </p>
+    <div class="tags">
+      <span class="tag">Excel Intermedio</span>
+      <span class="tag">Tabla Dinámica</span>
+      <span class="tag">Segmentación de Datos</span>
+      <span class="tag">Gráfico Dinámico</span>
+    </div>
+    <div class="btn-group">
+      <a href="#demo" class="btn btn-primary"><i class="fas fa-play"></i> Ver Simulación</a>
+      <a href="#pasos" class="btn btn-outline"><i class="fas fa-list-ol"></i> Cómo se hizo</a>
+    </div>
+  </div>
+
+  <!-- SIMULADOR EXCEL INTERACTIVO -->
+  <div class="demo-window" id="demo">
+    <div class="demo-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="demo-title">Ventas_Dashboard.xlsx — Excel</span>
+    </div>
+    <div class="demo-body" style="padding:0;">
+      <div class="xl-ribbon">
+        <span class="xl-tab active">Dashboard</span>
+        <span class="xl-tab">Base de Datos</span>
+        <span class="xl-tab">Tabla Dinámica</span>
+      </div>
+      <div class="xl-sheet">
+
+        <!-- SEGMENTADORES -->
+        <div class="seg-row">
+          <span class="seg-title">Mes:</span>
+          <button class="seg-btn active" onclick="filtrar('mes','Todos',this)">Todos</button>
+          <button class="seg-btn" onclick="filtrar('mes','Ene',this)">Ene</button>
+          <button class="seg-btn" onclick="filtrar('mes','Feb',this)">Feb</button>
+          <button class="seg-btn" onclick="filtrar('mes','Mar',this)">Mar</button>
+          <button class="seg-btn" onclick="filtrar('mes','Abr',this)">Abr</button>
+          <div class="seg-divider"></div>
+          <span class="seg-title">Categoría:</span>
+          <button class="seg-btn active" onclick="filtrar('cat','Todas',this)">Todas</button>
+          <button class="seg-btn" onclick="filtrar('cat','Ropa',this)">Ropa</button>
+          <button class="seg-btn" onclick="filtrar('cat','Calzado',this)">Calzado</button>
+          <button class="seg-btn" onclick="filtrar('cat','Accesorios',this)">Accesorios</button>
+        </div>
+
+        <!-- TABLA DINÁMICA -->
+        <div class="pivot-wrap">
+          <table class="pivot-table" id="pivot">
+            <thead>
+              <tr>
+                <th>Categoría</th>
+                <th class="num">Unidades</th>
+                <th class="num">Ingresos (S/)</th>
+                <th class="num">% del Total</th>
+              </tr>
+            </thead>
+            <tbody id="pivot-body"></tbody>
+            <tfoot>
+              <tr class="total" id="pivot-total"></tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- GRÁFICO BARRAS -->
+        <div class="chart-area">
+          <div class="chart-title">Ventas por Categoría</div>
+          <div class="bars-row" id="chart-bars"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FUNCIONALIDADES -->
+<div class="section">
+  <div class="sec-title">¿Qué hace este proyecto?</div>
+  <div class="sec-sub">Componentes principales del dashboard</div>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon"><i class="fas fa-database"></i></div>
+      <h3>Base de Datos Estructurada</h3>
+      <p>Tabla con columnas: Fecha, Mes, Categoría, Producto, Cantidad y Precio. Lista para conectar con tabla dinámica.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon"><i class="fas fa-table"></i></div>
+      <h3>Tabla Dinámica</h3>
+      <p>Resumen automático de ventas agrupadas por categoría con totales de unidades e ingresos.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon"><i class="fas fa-filter"></i></div>
+      <h3>Segmentación de Datos</h3>
+      <p>Filtros visuales interactivos por Mes y Categoría que actualizan toda la tabla y el gráfico al instante.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon"><i class="fas fa-chart-bar"></i></div>
+      <h3>Gráfico Dinámico</h3>
+      <p>Gráfico de barras vinculado a la tabla dinámica que cambia automáticamente al aplicar cualquier filtro.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PASOS -->
+<div class="section" id="pasos">
+  <div class="sec-title">Cómo se construyó</div>
+  <div class="sec-sub">Paso a paso en Excel</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Base de Datos</h3>
+      <p>Se creó una tabla con encabezados: Fecha, Mes, Categoría, Producto, Cantidad, Precio Unit. y Total. Se formateó como Tabla de Excel (Ctrl+T) para que sea dinámica.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Tabla Dinámica</h3>
+      <p>Insertar → Tabla Dinámica. Se colocó Categoría en Filas, y Cantidad + Total en Valores. Se aplicó formato de moneda a la columna de ingresos.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Segmentadores</h3>
+      <p>Con la tabla dinámica activa: Insertar → Segmentación de Datos → se seleccionaron los campos Mes y Categoría. Se conectaron ambos al mismo gráfico.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Gráfico Dinámico</h3>
+      <p>Insertar → Gráfico Dinámico → Barras agrupadas. Se limpió el diseño, se quitaron líneas de cuadrícula y se asignó la paleta de colores corporativa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FÓRMULAS -->
+<div class="section">
+  <div class="sec-title">Fórmulas Clave</div>
+  <div class="sec-sub">Las funciones usadas para complementar la tabla dinámica</div>
+  <div class="formulas">
+    <div class="formula-card">
+      <div class="formula-head"><i class="fas fa-file-excel"></i><span>Total por fila</span></div>
+      <div class="formula-body">
+        <div class="formula-code">=[Cantidad]*[Precio Unit.]</div>
+        <div class="formula-desc">Columna calculada dentro de la tabla. Al ser Tabla de Excel, la fórmula se replica automáticamente en cada fila nueva.</div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-head"><i class="fas fa-file-excel"></i><span>Ventas por categoría</span></div>
+      <div class="formula-body">
+        <div class="formula-code">=SUMAR.SI.CONJUNTO([Total],[Categoría],E2,[Mes],F2)</div>
+        <div class="formula-desc">Suma el total solo cuando coinciden la categoría y el mes seleccionados. Útil como respaldo fuera de la tabla dinámica.</div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-head"><i class="fas fa-file-excel"></i><span>% del total</span></div>
+      <div class="formula-body">
+        <div class="formula-code">=B2/SUMA($B$2:$B$10)</div>
+        <div class="formula-desc">Calcula qué porcentaje representa cada categoría sobre el total general. Se formatea como porcentaje con 1 decimal.</div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-head"><i class="fas fa-file-excel"></i><span>Extraer mes de fecha</span></div>
+      <div class="formula-body">
+        <div class="formula-code">=TEXTO(A2,"mmm")</div>
+        <div class="formula-desc">Convierte la fecha completa en la abreviatura del mes (Ene, Feb, Mar…) para usarla como campo de segmentación.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Proyecto de <a href="../index.html">Aldo DC</a> · Auxiliar de Almacén & Desarrollador Web
+</footer>
+
+<script>
+// ── DATOS BASE
+const DATOS = [
+  { mes:'Ene', cat:'Ropa',        prod:'Polo básico',    und:120, ing:3600 },
+  { mes:'Ene', cat:'Calzado',     prod:'Zapatillas',     und:45,  ing:4050 },
+  { mes:'Ene', cat:'Accesorios',  prod:'Mochila',        und:30,  ing:1500 },
+  { mes:'Feb', cat:'Ropa',        prod:'Jeans',          und:95,  ing:5225 },
+  { mes:'Feb', cat:'Calzado',     prod:'Botas',          und:38,  ing:4180 },
+  { mes:'Feb', cat:'Accesorios',  prod:'Cinturón',       und:60,  ing:1800 },
+  { mes:'Mar', cat:'Ropa',        prod:'Casaca',         und:55,  ing:6600 },
+  { mes:'Mar', cat:'Calzado',     prod:'Sandalias',      und:70,  ing:3500 },
+  { mes:'Mar', cat:'Accesorios',  prod:'Gorra',          und:80,  ing:2400 },
+  { mes:'Abr', cat:'Ropa',        prod:'Polo deportivo', und:110, ing:4400 },
+  { mes:'Abr', cat:'Calzado',     prod:'Zapatillas',     und:50,  ing:4500 },
+  { mes:'Abr', cat:'Accesorios',  prod:'Mochila',        und:25,  ing:1250 },
+];
+
+const COLORES = { Ropa:'#00ffd0', Calzado:'#777bb4', Accesorios:'#f7df1e' };
+
+let filtroMes = 'Todos', filtroCat = 'Todas';
+
+function filtrar(tipo, valor, btn) {
+  // Actualizar estado de botones del mismo grupo
+  btn.closest('.seg-row').querySelectorAll('.seg-btn').forEach(b => {
+    if (b.onclick && b.onclick.toString().includes(`'${tipo}'`)) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  if (tipo === 'mes') filtroMes = valor;
+  else filtroCat = valor;
+  renderTabla();
+}
+
+function renderTabla() {
+  const datos = DATOS.filter(d =>
+    (filtroMes === 'Todos' || d.mes === filtroMes) &&
+    (filtroCat === 'Todas' || d.cat === filtroCat)
+  );
+
+  // Agrupar por categoría
+  const grupos = {};
+  datos.forEach(d => {
+    if (!grupos[d.cat]) grupos[d.cat] = { und:0, ing:0 };
+    grupos[d.cat].und += d.und;
+    grupos[d.cat].ing += d.ing;
+  });
+
+  const totalUnd = Object.values(grupos).reduce((a,g) => a + g.und, 0);
+  const totalIng = Object.values(grupos).reduce((a,g) => a + g.ing, 0);
+
+  // Tabla
+  const tbody = document.getElementById('pivot-body');
+  tbody.innerHTML = Object.entries(grupos).map(([cat, g]) => `
+    <tr>
+      <td><div class="cat-cell"><div class="cat-dot" style="background:${COLORES[cat]||'#888'}"></div>${cat}</div></td>
+      <td class="num">${g.und.toLocaleString()}</td>
+      <td class="num">S/ ${g.ing.toLocaleString()}</td>
+      <td class="num">${totalIng ? ((g.ing/totalIng)*100).toFixed(1)+'%' : '—'}</td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:#555;padding:16px">Sin datos</td></tr>';
+
+  document.getElementById('pivot-total').innerHTML = `
+    <td><strong>TOTAL</strong></td>
+    <td class="num"><strong>${totalUnd.toLocaleString()}</strong></td>
+    <td class="num"><strong>S/ ${totalIng.toLocaleString()}</strong></td>
+    <td class="num"><strong>100%</strong></td>`;
+
+  // Gráfico
+  const maxIng = Math.max(...Object.values(grupos).map(g => g.ing), 1);
+  const chartDiv = document.getElementById('chart-bars');
+  chartDiv.innerHTML = Object.entries(grupos).map(([cat, g]) => {
+    const pct = Math.round((g.ing / maxIng) * 100);
+    return `<div class="bar-wrap">
+      <div class="bar-val">S/${(g.ing/1000).toFixed(1)}k</div>
+      <div class="bar" style="height:${pct}%;background:${COLORES[cat]||'#888'};min-height:4px;"></div>
+      <div class="bar-lbl">${cat.slice(0,3)}</div>
+    </div>`;
+  }).join('') || '<div style="color:#555;font-size:12px;margin:auto">Sin datos</div>';
+}
+
+renderTabla();
+</script>
+</body>
+</html>

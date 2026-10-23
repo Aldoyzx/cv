@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mi Espacio | Aldo DC</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--accent:#00ffd0;--btn:#008f82;--btn-h:#00c7b4;--card:rgba(17,17,17,.72);--border:rgba(0,255,208,.15);--text:#cfcfcf;--h:'Poppins',sans-serif;--b:'Roboto',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#050505;color:#fff;font-family:var(--b);min-height:100vh;overflow-x:hidden;}
+button{font-family:var(--h);cursor:pointer;}
+
+/* ── FONDO ── */
+#bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(135deg,#050505 0%,#0b2a27 50%,#1a1a1a 100%);background-size:cover;background-position:center;transition:background-image .6s;}
+#bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.65));}
+
+/* ── BLOQUEO ── */
+#lock{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,5,5,.6);backdrop-filter:blur(18px);}
+#lock.hidden{display:none;}
+.lock-card{width:100%;max-width:380px;background:rgba(17,17,17,.9);border:1px solid var(--border);border-radius:20px;padding:36px 30px;text-align:center;box-shadow:0 20px 60px rgba(0,255,208,.08);}
+.lock-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);box-shadow:0 0 30px rgba(0,255,208,.2);}
+.lock-card h1{font-family:var(--h);font-size:22px;margin-bottom:6px;}
+.lock-card p{color:var(--text);font-size:13px;margin-bottom:22px;}
+.pw-wrap{position:relative;margin-bottom:14px;}
+.pw-wrap input{width:100%;background:#0d0d0d;border:1px solid var(--border);border-radius:12px;padding:14px 46px 14px 16px;color:#fff;font-size:15px;outline:none;transition:border-color .3s;}
+.pw-wrap input:focus{border-color:var(--accent);}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text);font-size:15px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:50px;border:2px solid transparent;font-size:14px;font-weight:600;transition:all .3s;text-decoration:none;}
+.btn-primary{background:var(--btn);color:#fff;}
+.btn-primary:hover{background:var(--btn-h);transform:translateY(-2px);}
+.btn-outline{background:transparent;border-color:var(--btn);color:var(--accent);}
+.btn-outline:hover{background:var(--btn);color:#fff;}
+.btn-ghost{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.1);}
+.btn-ghost:hover{border-color:var(--accent);}
+.btn-danger{background:transparent;border-color:rgba(255,95,86,.4);color:#ff7b73;}
+.btn-danger:hover{background:rgba(255,95,86,.15);}
+.btn-sm{padding:8px 14px;font-size:12px;}
+.lock-card .btn{width:100%;}
+.lock-error{color:#ff7b73;font-size:13px;min-height:18px;margin-top:12px;}
+.shake{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.lock-back{display:inline-block;margin-top:16px;color:var(--text);font-size:13px;text-decoration:none;}
+.lock-back:hover{color:var(--accent);}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 40px;background:rgba(5,5,5,.75);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--h);font-weight:700;color:var(--accent);letter-spacing:2px;text-decoration:none;font-size:18px;}
+.tabs{display:flex;gap:6px;background:rgba(255,255,255,.05);padding:4px;border-radius:50px;}
+.tab{background:none;border:none;color:var(--text);padding:8px 18px;border-radius:50px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;transition:all .25s;}
+.tab.active{background:var(--btn);color:#fff;}
+.nav-actions{display:flex;gap:8px;}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;display:inline-flex;align-items:center;justify-content:center;transition:all .25s;text-decoration:none;font-size:14px;}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.panel{display:none;max-width:1150px;margin:0 auto;padding:40px 40px 60px;}
+.panel.active{display:block;animation:fade .4s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── MI ESPACIO ── */
+.hero-space{min-height:calc(100vh - 180px);display:flex;flex-direction:column;justify-content:center;}
+.clock{font-family:var(--h);font-size:88px;font-weight:700;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.5);}
+.date{font-size:18px;color:var(--text);margin:8px 0 28px;text-transform:capitalize;}
+.greet{font-family:var(--h);font-size:30px;font-weight:600;margin-bottom:6px;}
+.greet span{color:var(--accent);}
+.quote-box{max-width:620px;background:var(--card);backdrop-filter:blur(10px);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;margin:20px 0 28px;}
+.quote-box p{font-style:italic;color:var(--text);line-height:1.7;outline:none;}
+.quote-box small{display:block;margin-top:8px;font-size:11px;color:rgba(255,255,255,.4);}
+.space-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+.glass{background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.glass h3{font-family:var(--h);font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.glass h3 i{color:var(--accent);}
+.stat-big{font-family:var(--h);font-size:34px;font-weight:700;color:var(--accent);}
+.muted{color:var(--text);font-size:13px;}
+.bg-actions{display:flex;flex-wrap:wrap;gap:8px;}
+.recent-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.recent-list li{font-size:13px;color:var(--text);padding:8px 10px;background:rgba(255,255,255,.04);border-radius:8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent-list li:hover{color:#fff;background:rgba(0,255,208,.08);}
+
+/* ── NOTAS ── */
+.notes-head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.notes-head h2{font-family:var(--h);font-size:26px;}
+.notes-head h2 span{color:var(--accent);font-size:15px;margin-left:8px;}
+.notes-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.search{position:relative;}
+.search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text);font-size:13px;}
+.search input{background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:10px 16px 10px 38px;color:#fff;outline:none;width:220px;}
+.search input:focus{border-color:var(--accent);}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.filter{background:var(--card);border:1px solid rgba(255,255,255,.1);color:var(--text);padding:6px 14px;border-radius:50px;font-size:12px;}
+.filter.active{border-color:var(--accent);color:var(--accent);}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;}
+.note{position:relative;background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-top:4px solid var(--c,#00ffd0);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;min-height:150px;cursor:pointer;transition:all .25s;}
+.note:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);border-top-color:var(--c);}
+.note h4{font-family:var(--h);font-size:15px;padding-right:24px;word-break:break-word;}
+.note p{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word;flex:1;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;}
+.note .meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,255,255,.4);}
+.note .tag-cat{padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.06);}
+.note .pin{position:absolute;top:14px;right:14px;color:var(--accent);font-size:13px;}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text);}
+.empty i{font-size:42px;color:var(--accent);margin-bottom:14px;display:block;opacity:.6;}
+
+/* ── MODAL ── */
+.modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);}
+.modal.open{display:flex;}
+.modal-card{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:#111;border:1px solid var(--border);border-radius:18px;padding:26px;}
+.modal-card h3{font-family:var(--h);margin-bottom:18px;}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.field label{font-size:11px;font-family:var(--h);letter-spacing:1px;text-transform:uppercase;color:var(--text);}
+.field input,.field textarea,.field select{background:#0d0d0d;border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:#fff;font-family:var(--b);font-size:14px;outline:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+.field textarea{min-height:180px;resize:vertical;line-height:1.6;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.colors{display:flex;gap:8px;flex-wrap:wrap;padding-top:4px;}
+.color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+.color.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.2);}
+.check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);margin-bottom:18px;cursor:pointer;}
+.modal-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;}
+.modal-actions div{display:flex;gap:8px;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;border:1px solid var(--accent);color:#fff;padding:12px 20px;border-radius:50px;font-size:13px;z-index:200;transition:transform .3s;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+@media(max-width:768px){
+  nav{padding:12px 16px;flex-wrap:wrap;}
+  .tabs{order:3;width:100%;justify-content:center;}
+  .panel{padding:28px 16px 50px;}
+  .clock{font-size:60px;}
+  .greet{font-size:24px;}
+  .search input{width:100%;}
+  .search,.notes-tools{width:100%;}
+  .row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div><div id="bg-overlay"></div>
+
+<!-- ══ PANTALLA DE CONTRASEÑA ══ -->
+<div id="lock">
+  <form class="lock-card" id="lock-form" autocomplete="off">
+    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+    <h1>Mi Espacio</h1>
+    <p>Área privada. Ingresa tu contraseña para continuar.</p>
+    <div class="pw-wrap">
+      <input type="password" id="pw" placeholder="Contraseña" autofocus>
+      <button type="button" class="pw-toggle" onclick="togglePw('pw',this)"><i class="fas fa-eye"></i></button>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-unlock"></i> Entrar</button>
+    <div class="lock-error" id="lock-error"></div>
+    <a href="index.html" class="lock-back"><i class="fas fa-arrow-left"></i> Volver al portafolio</a>
+  </form>
+</div>
+
+<!-- ══ CONTENIDO PRIVADO ══ -->
+<div id="app" hidden>
+  <nav>
+    <a href="index.html" class="nav-logo">ALDO DC</a>
+    <div class="tabs">
+      <button class="tab active" data-tab="espacio"><i class="fas fa-home"></i> Mi espacio</button>
+      <button class="tab" data-tab="notas"><i class="fas fa-sticky-note"></i> Notas</button>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" title="Cambiar contraseña" onclick="openModal('pw-modal')"><i class="fas fa-key"></i></button>
+      <button class="icon-btn" title="Bloquear" onclick="bloquear()"><i class="fas fa-lock"></i></button>
+      <a class="icon-btn" title="Volver al portafolio" href="index.html"><i class="fas fa-arrow-left"></i></a>
+    </div>
+  </nav>
+
+  <!-- APARTADO 1: ESPACIO CON FONDO -->
+  <section class="panel active" id="espacio">
+    <div class="hero-space">
+      <div class="clock" id="clock">00:00</div>
+      <div class="date" id="date"></div>
+      <div class="greet" id="greet">Hola, <span>Aldo</span></div>
+      <div class="quote-box">
+        <p id="frase" contenteditable="true" spellcheck="false">Escribe aquí tu frase o meta del momento…</p>
+        <small><i class="fas fa-pen"></i> Haz clic en el texto para editarlo · se guarda solo</small>
+      </div>
+      <div class="space-grid">
+        <div class="glass">
+          <h3><i class="fas fa-image"></i> Imagen de fondo</h3>
+          <p class="muted" style="margin-bottom:12px">Sube cualquier foto; se guarda en este navegador.</p>
+          <div class="bg-actions">
+            <label class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Cambiar fondo
+              <input type="file" accept="image/*" id="bg-file" hidden>
+            </label>
+            <button class="btn btn-ghost btn-sm" onclick="resetBg()"><i class="fas fa-undo"></i> Original</button>
+          </div>
+        </div>
+        <div class="glass">
+          <h3><i class="fas fa-sticky-note"></i> Mis notas</h3>
+          <div class="stat-big" id="count-notes">0</div>
+          <p class="muted" id="count-pinned">0 fijadas</p>
+        </div>
+        <div class="glass">
+          <h3><i class="fas fa-clock"></i> Recientes</h3>
+          <ul class="recent-list" id="recent"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APARTADO 2: NOTAS -->
+  <section class="panel" id="notas">
+    <div class="notes-head">
+      <h2>Mis Notas<span id="notes-total"></span></h2>
+      <div class="notes-tools">
+        <div class="search"><i class="fas fa-search"></i><input id="search" placeholder="Buscar notas…"></div>
+        <button class="btn btn-primary btn-sm" onclick="nuevaNota()"><i class="fas fa-plus"></i> Nueva nota</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportar()" title="Descargar copia de seguridad"><i class="fas fa-download"></i></button>
+        <label class="btn btn-ghost btn-sm" title="Importar copia de seguridad"><i class="fas fa-file-import"></i><input type="file" accept="application/json" id="import-file" hidden></label>
+      </div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="notes-grid" id="notes-grid"></div>
+  </section>
+</div>
+
+<!-- MODAL NOTA -->
+<div class="modal" id="note-modal" onclick="if(event.target===this)closeModal('note-modal')">
+  <form class="modal-card" id="note-form">
+    <h3 id="note-modal-title">Nueva nota</h3>
+    <div class="field"><label>Título</label><input id="n-title" maxlength="80" placeholder="Ej: Ideas para el portafolio" required></div>
+    <div class="field"><label>Contenido</label><textarea id="n-body" placeholder="Escribe tu nota…"></textarea></div>
+    <div class="row">
+      <div class="field"><label>Categoría</label>
+        <select id="n-cat">
+          <option>Personal</option><option>Trabajo</option><option>Estudios</option><option>Ideas</option><option>Pendientes</option>
+        </select>
+      </div>
+      <div class="field"><label>Color</label><div class="colors" id="n-colors"></div></div>
+    </div>
+    <label class="check"><input type="checkbox" id="n-pin"> <i class="fas fa-thumbtack"></i> Fijar arriba</label>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger btn-sm" id="n-delete"><i class="fas fa-trash"></i> Eliminar</button>
+      <div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('note-modal')">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- MODAL CONTRASEÑA -->
+<div class="modal" id="pw-modal" onclick="if(event.target===this)closeModal('pw-modal')">
+  <form class="modal-card" id="pw-form" style="max-width:400px">
+    <h3><i class="fas fa-key" style="color:var(--accent)"></i> Cambiar contraseña</h3>
+    <div class="field"><label>Contraseña actual</label><input type="password" id="pw-old" required></div>
+    <div class="field"><label>Nueva contraseña</label><input type="password" id="pw-new" minlength="6" required></div>
+    <div class="field"><label>Repetir nueva</label><input type="password" id="pw-new2" minlength="6" required></div>
+    <p class="muted" style="margin-bottom:16px;font-size:12px">El cambio se guarda en este navegador.</p>
+    <div class="modal-actions"><span></span><div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('pw-modal')">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+    </div></div>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════ CONFIGURACIÓN ════════════
+   Contraseña por defecto: Aldo#2026
+   Para cambiarla en el código, pon aquí el SHA-256 de tu nueva clave
+   (puedes generarlo desde el botón 🔑 dentro de la página y luego verlo en la consola).
+   Imagen de fondo por defecto: visual/fondo.jpg (si no existe, se usa un degradado). */
+const DEFAULT_HASH = 'e33000bbedfb9437feaa118eeb713a9ae036a15b70dcac9e1771e141f58fb0a4';
+const DEFAULT_BG   = 'visual/fondo.jpg';
+const AUTO_LOCK_MIN = 15;   // se bloquea tras 15 min sin actividad
+
+const K = { hash:'aldo_pw_hash', notes:'aldo_notes', bg:'aldo_bg', frase:'aldo_frase', sess:'aldo_unlocked' };
+const COLORS = ['#00ffd0','#f2c811','#ff7b73','#777bb4','#25d366','#4fa3ff','#ff9f43'];
+
+/* ── Almacenamiento seguro ── */
+const store = {
+  get(k, def=null){ try{ const v=localStorage.getItem(k); return v===null?def:v; }catch(e){ return def; } },
+  set(k, v){ try{ localStorage.setItem(k, v); return true; }catch(e){ toast('No se pudo guardar (almacenamiento lleno)'); return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const sess = {
+  get(){ try{ return sessionStorage.getItem(K.sess)==='1'; }catch(e){ return false; } },
+  set(v){ try{ v?sessionStorage.setItem(K.sess,'1'):sessionStorage.removeItem(K.sess); }catch(e){} }
+};
+
+async function sha256(txt){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+const currentHash = () => store.get(K.hash) || DEFAULT_HASH;
+
+/* ── Bloqueo ── */
+let intentos = 0;
+document.getElementById('lock-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const input = document.getElementById('pw'), err = document.getElementById('lock-error');
+  if (intentos >= 5) return;
+  if (await sha256(input.value) === currentHash()) {
+    sess.set(true); desbloquear();
+  } else {
+    intentos++;
+    input.value=''; e.target.classList.remove('shake'); void e.target.offsetWidth; e.target.classList.add('shake');
+    if (intentos >= 5) {
+      err.textContent = 'Demasiados intentos. Espera 30 segundos.';
+      setTimeout(()=>{ intentos=0; err.textContent=''; }, 30000);
+    } else err.textContent = 'Contraseña incorrecta (' + intentos + '/5)';
+  }
+});
+function desbloquear(){
+  document.getElementById('lock').classList.add('hidden');
+  document.getElementById('app').hidden = false;
+  document.getElementById('pw').value='';
+  renderTodo(); resetIdle();
+}
+function bloquear(){
+  sess.set(false);
+  document.getElementById('app').hidden = true;
+  document.getElementById('lock').classList.remove('hidden');
+  document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
+  setTimeout(()=>document.getElementById('pw').focus(), 50);
+}
+function togglePw(id, btn){
+  const i=document.getElementById(id); i.type = i.type==='password'?'text':'password';
+  btn.innerHTML = i.type==='password'?'<i class="fas fa-eye"></i>':'<i class="fas fa-eye-slash"></i>';
+}
+let idleT;
+function resetIdle(){ clearTimeout(idleT); if(!document.getElementById('app').hidden) idleT=setTimeout(bloquear, AUTO_LOCK_MIN*60000); }
+['click','keydown','mousemove','touchstart'].forEach(ev=>document.addEventListener(ev, resetIdle, {passive:true}));
+
+/* ── Cambiar contraseña ── */
+document.getElementById('pw-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const o=pwOld.value, n=pwNew.value, n2=pwNew2.value;
+  if (await sha256(o) !== currentHash()) return toast('La contraseña actual no es correcta');
+  if (n !== n2) return toast('Las contraseñas nuevas no coinciden');
+  const h = await sha256(n);
+  store.set(K.hash, h);
+  console.log('Nuevo hash (pégalo en DEFAULT_HASH para que valga en todos tus dispositivos):', h);
+  e.target.reset(); closeModal('pw-modal'); toast('Contraseña actualizada');
+});
+const pwOld=document.getElementById('pw-old'), pwNew=document.getElementById('pw-new'), pwNew2=document.getElementById('pw-new2');
+
+/* ── Pestañas ── */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>irA(t.dataset.tab)));
+function irA(id){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===id));
+}
+
+/* ── Fondo ── */
+function aplicarFondo(){
+  const custom = store.get(K.bg);
+  const bg = document.getElementById('bg');
+  if (custom) { bg.style.backgroundImage = `url("${custom}")`; return; }
+  const img = new Image();
+  img.onload = ()=> bg.style.backgroundImage = `url("${DEFAULT_BG}")`;
+  img.onerror = ()=> bg.style.backgroundImage = '';
+  img.src = DEFAULT_BG;
+}
+document.getElementById('bg-file').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=>{
+      // Redimensiona y comprime para que quepa en el almacenamiento del navegador
+      const max = 1920, s = Math.min(1, max/Math.max(img.width,img.height));
+      const c = document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      let q=.82, data=c.toDataURL('image/jpeg', q);
+      while (data.length > 3_000_000 && q > .4) { q-=.1; data=c.toDataURL('image/jpeg', q); }
+      if (store.set(K.bg, data)) { aplicarFondo(); toast('Fondo actualizado'); }
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(f); e.target.value='';
+});
+function resetBg(){ store.del(K.bg); aplicarFondo(); toast('Fondo original restaurado'); }
+
+/* ── Reloj y saludo ── */
+function tick(){
+  const d = new Date(), h = d.getHours();
+  document.getElementById('clock').textContent = d.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('date').textContent = d.toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const s = h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
+  document.getElementById('greet').innerHTML = `${s}, <span>Aldo</span>`;
+}
+setInterval(tick, 1000); tick();
+
+/* ── Frase editable ── */
+const frase = document.getElementById('frase');
+frase.textContent = store.get(K.frase, frase.textContent);
+frase.addEventListener('input', ()=> store.set(K.frase, frase.textContent));
+
+/* ── Notas ── */
+let notas = [], filtro = 'Todas', editId = null, colorSel = COLORS[0];
+try { notas = JSON.parse(store.get(K.notes,'[]')) || []; } catch(e){ notas = []; }
+const guardar = ()=> store.set(K.notes, JSON.stringify(notas));
+const esc = s => s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fecha = t => new Date(t).toLocaleDateString('es-PE',{day:'2-digit',month:'short'});
+
+function renderTodo(){ aplicarFondo(); renderNotas(); renderResumen(); }
+
+function renderFiltros(){
+  const cats = ['Todas', ...new Set(notas.map(n=>n.cat))];
+  if (!cats.includes(filtro)) filtro='Todas';
+  document.getElementById('filters').innerHTML = cats.map(c=>
+    `<button class="filter ${c===filtro?'active':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+  document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{ filtro=b.dataset.c; renderNotas(); });
+}
+function renderNotas(){
+  renderFiltros();
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const lista = notas
+    .filter(n => (filtro==='Todas'||n.cat===filtro) && (!q || (n.title+' '+n.body).toLowerCase().includes(q)))
+    .sort((a,b)=> (b.pin-a.pin) || (b.updated-a.updated));
+  document.getElementById('notes-total').textContent = notas.length ? `(${notas.length})` : '';
+  const grid = document.getElementById('notes-grid');
+  grid.innerHTML = lista.length ? lista.map(n=>`
+    <div class="note" style="--c:${n.color}" data-id="${n.id}">
+      ${n.pin?'<i class="fas fa-thumbtack pin"></i>':''}
+      <h4>${esc(n.title)}</h4>
+      <p>${esc(n.body)}</p>
+      <div class="meta"><span class="tag-cat">${esc(n.cat)}</span><span>${fecha(n.updated)}</span></div>
+    </div>`).join('')
+    : `<div class="empty"><i class="fas fa-sticky-note"></i>${notas.length?'No hay notas que coincidan.':'Aún no tienes notas. ¡Crea la primera!'}</div>`;
+  grid.querySelectorAll('.note').forEach(el=>el.onclick=()=>editarNota(el.dataset.id));
+  renderResumen();
+}
+function renderResumen(){
+  document.getElementById('count-notes').textContent = notas.length;
+  document.getElementById('count-pinned').textContent = notas.filter(n=>n.pin).length + ' fijadas';
+  const rec = [...notas].sort((a,b)=>b.updated-a.updated).slice(0,4);
+  const ul = document.getElementById('recent');
+  ul.innerHTML = rec.length ? rec.map(n=>`<li data-id="${n.id}"><i class="fas fa-circle" style="color:${n.color};font-size:7px;margin-right:8px"></i>${esc(n.title)}</li>`).join('')
+    : '<li style="cursor:default">Sin notas todavía</li>';
+  ul.querySelectorAll('li[data-id]').forEach(li=>li.onclick=()=>{ irA('notas'); editarNota(li.dataset.id); });
+}
+document.getElementById('search').addEventListener('input', renderNotas);
+
+function pintarColores(){
+  document.getElementById('n-colors').innerHTML = COLORS.map(c=>`<span class="color ${c===colorSel?'sel':''}" style="background:${c}" data-c="${c}"></span>`).join('');
+  document.querySelectorAll('#n-colors .color').forEach(s=>s.onclick=()=>{ colorSel=s.dataset.c; pintarColores(); });
+}
+function nuevaNota(){
+  editId=null; colorSel=COLORS[0];
+  document.getElementById('note-form').reset();
+  document.getElementById('note-modal-title').textContent='Nueva nota';
+  document.getElementById('n-delete').style.visibility='hidden';
+  pintarColores(); openModal('note-modal'); document.getElementById('n-title').focus();
+}
+function editarNota(id){
+  const n = notas.find(x=>x.id===id); if(!n) return;
+  editId=id; colorSel=n.color;
+  document.getElementById('n-title').value=n.title;
+  document.getElementById('n-body').value=n.body;
+  document.getElementById('n-cat').value=n.cat;
+  document.getElementById('n-pin').checked=n.pin;
+  document.getElementById('note-modal-title').textContent='Editar nota';
+  document.getElementById('n-delete').style.visibility='visible';
+  pintarColores(); openModal('note-modal');
+}
+document.getElementById('note-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  const data = {
+    title: document.getElementById('n-title').value.trim() || 'Sin título',
+    body: document.getElementById('n-body').value,
+    cat: document.getElementById('n-cat').value,
+    pin: document.getElementById('n-pin').checked,
+    color: colorSel, updated: Date.now()
+  };
+  if (editId) Object.assign(notas.find(n=>n.id===editId), data);
+  else notas.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), created: Date.now(), ...data });
+  guardar(); closeModal('note-modal'); renderNotas(); toast('Nota guardada');
+});
+document.getElementById('n-delete').onclick = ()=>{
+  if (!editId || !confirm('¿Eliminar esta nota?')) return;
+  notas = notas.filter(n=>n.id!==editId); guardar(); closeModal('note-modal'); renderNotas(); toast('Nota eliminada');
+};
+
+/* ── Copia de seguridad ── */
+function exportar(){
+  const blob = new Blob([JSON.stringify({notas, frase: frase.textContent}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'mis-notas-' + new Date().toISOString().slice(0,10) + '.json'; a.click();
+  URL.revokeObjectURL(a.href); toast('Copia descargada');
+}
+document.getElementById('import-file').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  f.text().then(t=>{
+    const d = JSON.parse(t);
+    const nuevas = Array.isArray(d) ? d : d.notas;
+    if (!Array.isArray(nuevas)) throw 0;
+    const ids = new Set(notas.map(n=>n.id));
+    nuevas.forEach(n=>{ if(n && n.id && !ids.has(n.id)) notas.push(n); });
+    if (d.frase) { frase.textContent=d.frase; store.set(K.frase,d.frase); }
+    guardar(); renderNotas(); toast('Notas importadas');
+  }).catch(()=>toast('Archivo no válido'));
+  e.target.value='';
+});
+
+/* ── Utilidades ── */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')); });
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ── Inicio ── */
+if (sess.get()) desbloquear();
+</script>
+</body>
+</html>
